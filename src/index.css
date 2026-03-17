@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+@theme {
+  --font-press-start: "Press Start 2P", system-ui;
+  --font-space-grotesk: "Space Grotesk", sans-serif;
+  
+  --color-secondary: #02e600;
+  --color-surface: #131313;
+  --color-surface-container: #1f1f1f;
+  --color-surface-container-low: #1b1b1b;
+  --color-surface-container-lowest: #0e0e0e;
+  --color-surface-container-highest: #353535;
+}
+
+@layer base {
+  body {
+    @apply bg-black text-white font-space-grotesk selection:bg-secondary selection:text-black;
+  }
+}
+
+@layer utilities {
+  .pixel-grid {
+    background-image: radial-gradient(#353535 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  
+  .stepped-border {
+    box-shadow: 4px 4px 0px 0px #ffffff;
+  }
+  
+  .stepped-border-secondary {
+    box-shadow: 4px 4px 0px 0px #02e600;
+  }
+
+  .pixel-border-heavy {
+    border: 2px solid #ffffff;
+  }
+
+  .dithered-bg {
+    background-image: radial-gradient(#353535 1px, transparent 1px);
+    background-size: 4px 4px;
+  }
+
+  .stepped-shadow {
+    box-shadow: 4px 4px 0 0 #000000, 6px 6px 0 0 #ffffff;
+  }
+
+  .markdown-body h1 {
+    @apply font-press-start text-xl md:text-2xl text-secondary mb-8 mt-12 uppercase;
+  }
+  .markdown-body h2 {
+    @apply font-press-start text-sm md:text-base text-white mb-6 mt-10 uppercase border-b-2 border-white/20 pb-2;
+  }
+  .markdown-body h3 {
+    @apply font-bold text-lg text-secondary mb-4 mt-8;
+  }
+  .markdown-body p {
+    @apply mb-4 text-white/80 leading-relaxed;
+  }
+  .markdown-body ul {
+    @apply list-disc list-inside mb-6 space-y-2 text-white/70;
+  }
+  .markdown-body ol {
+    @apply list-decimal list-inside mb-6 space-y-2 text-white/70;
+  }
+  .markdown-body pre {
+    @apply bg-surface-container-lowest p-4 border-2 border-white/10 mb-6 overflow-x-auto font-mono text-sm text-secondary;
+  }
+  .markdown-body code {
+    @apply font-mono text-secondary bg-white/5 px-1;
+  }
+  .markdown-body pre code {
+    @apply p-0 bg-transparent;
+  }
+}
