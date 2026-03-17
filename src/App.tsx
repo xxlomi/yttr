@@ -5,7 +5,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import ReactMarkdown from 'react-markdown';
 import { 
   History, 
   Settings, 
@@ -17,30 +16,25 @@ import {
   Copy,
   RefreshCw,
   CheckCircle2,
-  AlertCircle,
-  ChevronLeft
+  AlertCircle
 } from 'lucide-react';
 import { transcribeVideo, TranscriptionResult } from './services/transcriptionService';
-import { DEPLOYMENT_DOCS } from './constants/docs';
 
 // --- Components ---
 
-const Header = ({ onNavigate }: { onNavigate: (view: any) => void }) => (
+const Header = () => (
   <nav className="bg-black border-b-2 border-white fixed top-0 z-50 w-full">
     <div className="flex justify-between items-center w-full px-6 py-4 max-w-full">
-      <div 
-        className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase font-press-start cursor-pointer hover:text-secondary transition-colors"
-        onClick={() => onNavigate('home')}
-      >
+      <div className="text-xl md:text-2xl font-black tracking-tighter text-white uppercase font-press-start">
         yttr
       </div>
       <div className="flex items-center gap-4 md:gap-8">
-        <button 
+        <a 
           className="hidden md:block text-white font-bold hover:bg-white hover:text-black transition-colors px-2 py-1 uppercase text-sm font-space-grotesk" 
-          onClick={() => onNavigate('docs')}
+          href="#"
         >
           How it works
-        </button>
+        </a>
         <div className="flex gap-4">
           <History className="text-white cursor-pointer hover:text-secondary w-5 h-5" />
           <Settings className="text-white cursor-pointer hover:text-secondary w-5 h-5" />
@@ -50,7 +44,7 @@ const Header = ({ onNavigate }: { onNavigate: (view: any) => void }) => (
   </nav>
 );
 
-const Footer = ({ onNavigate }: { onNavigate: (view: any) => void }) => (
+const Footer = () => (
   <footer className="bg-black border-t-2 border-white fixed bottom-0 w-full z-50">
     <div className="flex flex-col md:flex-row justify-between items-center w-full px-8 py-4 md:py-6 gap-4">
       <div className="flex items-center gap-4">
@@ -60,12 +54,7 @@ const Footer = ({ onNavigate }: { onNavigate: (view: any) => void }) => (
         <div className="h-4 w-[2px] bg-surface-container-highest hidden md:block"></div>
         <div className="flex gap-4">
           <a className="text-white/60 text-[0.6875rem] font-mono tracking-widest uppercase hover:text-white hover:bg-surface-container-highest px-2" href="#">Source</a>
-          <button 
-            className="text-white/60 text-[0.6875rem] font-mono tracking-widest uppercase hover:text-white hover:bg-surface-container-highest px-2"
-            onClick={() => onNavigate('docs')}
-          >
-            API
-          </button>
+          <a className="text-white/60 text-[0.6875rem] font-mono tracking-widest uppercase hover:text-white hover:bg-surface-container-highest px-2" href="#">API</a>
           <a className="text-white/60 text-[0.6875rem] font-mono tracking-widest uppercase hover:text-white hover:bg-surface-container-highest px-2" href="#">Support</a>
         </div>
       </div>
@@ -81,29 +70,6 @@ const Footer = ({ onNavigate }: { onNavigate: (view: any) => void }) => (
 );
 
 // --- Views ---
-
-const DocsView = ({ onBack }: { onBack: () => void }) => (
-  <motion.div 
-    initial={{ opacity: 0, x: 20 }}
-    animate={{ opacity: 1, x: 0 }}
-    exit={{ opacity: 0, x: -20 }}
-    className="w-full max-w-4xl px-6 z-10 py-12"
-  >
-    <button 
-      onClick={onBack}
-      className="flex items-center gap-2 text-secondary font-press-start text-[0.65rem] mb-8 hover:translate-x-[-4px] transition-transform"
-    >
-      <ChevronLeft className="w-4 h-4" />
-      BACK_TO_TERMINAL
-    </button>
-    
-    <div className="bg-surface-container-lowest pixel-border-heavy p-8 md:p-12 stepped-shadow">
-      <div className="markdown-body">
-        <ReactMarkdown>{DEPLOYMENT_DOCS}</ReactMarkdown>
-      </div>
-    </div>
-  </motion.div>
-);
 
 const HomeView = ({ onTranscribe }: { onTranscribe: (url: string) => void }) => {
   const [url, setUrl] = useState('');
@@ -232,8 +198,8 @@ const ResultView = ({ result, onReset }: { result: TranscriptionResult, onReset:
         <div className="h-4 w-full bg-surface-container-lowest pixel-border-heavy flex overflow-hidden">
           <motion.div 
             initial={{ width: 0 }}
-            animate={{ width: ['0%', '10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%'] }}
-            transition={{ duration: 1, times: [0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1], ease: "linear" }}
+            animate={{ width: '100%' }}
+            transition={{ duration: 1, ease: "steps(10)" }}
             className="h-full bg-secondary"
           />
         </div>
@@ -322,7 +288,7 @@ const ErrorView = ({ message, onReset }: { message: string, onReset: () => void 
 // --- Main App ---
 
 export default function App() {
-  const [view, setView] = useState<'home' | 'loading' | 'result' | 'error' | 'docs'>('home');
+  const [view, setView] = useState<'home' | 'loading' | 'result' | 'error'>('home');
   const [result, setResult] = useState<TranscriptionResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -347,7 +313,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden pixel-grid bg-black">
-      <Header onNavigate={setView} />
+      <Header />
       
       <main className="flex-grow pt-32 pb-40 flex flex-col items-center justify-center relative">
         {/* Background Decoration: 8-bit Stars */}
@@ -361,11 +327,10 @@ export default function App() {
           {view === 'loading' && <LoadingView key="loading" />}
           {view === 'result' && result && <ResultView key="result" result={result} onReset={handleReset} />}
           {view === 'error' && <ErrorView key="error" message={error || 'Unknown Error'} onReset={handleReset} />}
-          {view === 'docs' && <DocsView key="docs" onBack={handleReset} />}
         </AnimatePresence>
       </main>
 
-      <Footer onNavigate={setView} />
+      <Footer />
     </div>
   );
 }
